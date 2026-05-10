@@ -14,10 +14,10 @@ This is a simple hand - crafted from Linalg to Neural Networks deep learning fra
 
 
 # Main Stuff:
-# Tabel Of Contents
-# [1] Linalg Documentation Link : 
-# [2] NeuralNet Documentation Link :
-# [3] How to download and run by myself?: (see below)
+## Tabel Of Contents
+## [1] Linalg Documentation Link : 
+## [2] NeuralNet Documentation Link :
+## [3] How to download and run by myself?: (see below)
 
 
 # Download and setup: 
