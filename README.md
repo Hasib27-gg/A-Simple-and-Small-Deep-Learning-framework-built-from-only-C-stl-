@@ -15,8 +15,8 @@ This is a simple hand - crafted from Linalg to Neural Networks deep learning fra
 
 # Main Stuff:
 ## Tabel Of Contents
-## [1] Linalg Documentation Link : 
-## [2] NeuralNet Documentation Link :
+## [1] [Linalg Documentation Link](LinalgDoc.md)
+## [2] [NeuralNet Documentation Link](NeuralNetDoc.md)
 ## [3] How to download and run by myself?: (see below)
 
 
