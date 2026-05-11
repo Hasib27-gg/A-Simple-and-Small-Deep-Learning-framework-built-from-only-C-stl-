@@ -450,7 +450,14 @@ This is a core kenrel in the whole project . It tries to apply matrix tranpose e
 ### Args:
 #### Matrix<NumberType>& m : the input matrix
 #### const std::size_t rtnId = NULL_OBJECT_ID /* removed */
+#### const std::size_t rowTile / colTile: These are the block sizes for the tiling algorithm. Defaulted to 128, which is usually a "sweet spot" for L1/L2 cache performance on most modern CPUS.
+### Detailed code exploration:
+Now many things can go in the head "why use 4 nested loops". Let's derive the same thing:
+In traditional sense, you may often see that the whole thing is:
+```
 
-
+for(i =0 ; i < r, i++)
+    for (j = 0; j < c; 
+```
 
 
