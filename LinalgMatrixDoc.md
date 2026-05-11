@@ -195,7 +195,7 @@ inline Matrix<NumberType> createMatrix(
 ```
 
 #### What it does:
-Simply It just creates an Matrix<NumberType> instance, sets the row, col sizes and the object id then resizes the underlying FlatArray, finally shrinks the FlatArray (to not occupy too much memor[...]
+Simply It just creates an Matrix<NumberType> instance, sets the row, col sizes and the object id then resizes the underlying FlatArray, finally shrinks the FlatArray (to not occupy too much memory).
 
 #### Args:
 ##### - `const std::size_t rowSize` : The desired number of rows for the matrix
@@ -204,6 +204,9 @@ Simply It just creates an Matrix<NumberType> instance, sets the row, col sizes a
 
 #### Returns:
 ##### - A newly created `Matrix<NumberType>` with allocated memory
+
+#### Throws error if:
+##### - Memory allocation fails (std::bad_alloc)
 
 #### Example:
 
@@ -238,6 +241,9 @@ uses operator= () to assign the from.getData() to the to.getData() and finally s
 
 #### Returns:
 ##### - void (modifies destination matrix in-place)
+
+#### Throws error if:
+##### - Memory allocation fails during assignment (std::bad_alloc)
 
 #### Example:
 ```
@@ -323,11 +329,11 @@ inline void copy_if_allocated(
 #### What it does: 
 [Usefulness: Extremely Useful]
 ***Note: It has 2 overloads***
-If the destination matrix is already allocated (must have the same capacity of the source matrix), then this function copies all the values from the source matrix to the destination matrix. It us[...]
+If the destination matrix is already allocated (must have the same capacity of the source matrix), then this function copies all the values from the source matrix to the destination matrix. It uses loop unrolling for efficient copying.
 
-This is specifically designed to be used in modules of NeuralNet:: , beucase we pre - allocated buffers (so that forward pass don't have to wait for the os to allocate the memory) , and then copy[...]
+This is specifically designed to be used in modules of NeuralNet:: , because we pre-allocated buffers (so that forward pass don't have to wait for the OS to allocate the memory), and then copy the values efficiently.
 
-The first overload is meant to be used if the 2 matricies has same dtype. Otherwise the second matrix can be used for copy and cast at once.
+The first overload is meant to be used if the 2 matrices have the same dtype. Otherwise the second overload can be used for copy and cast at once.
 
 #### Args (Overload 1 - Same Type):
 ##### - `Matrix<NumberType>& from` : Source matrix to copy from
@@ -341,6 +347,9 @@ The first overload is meant to be used if the 2 matricies has same dtype. Otherw
 
 #### Returns:
 ##### - void (modifies destination matrix in-place)
+
+#### Throws error if:
+##### - Size of destination matrix does not match size of source matrix (std::runtime_error: "Size mismatch!")
 
 #### Example:
 ```
@@ -410,6 +419,9 @@ return res;
 #### Returns:
 ##### - void (modifies matrix in-place)
 
+#### Throws error if:
+##### - Generator functor throws an exception during value generation
+
 ### Example:
 
 ```
@@ -477,7 +489,7 @@ void transpose(
 
 
 ### Explanation: 
-This is a core kenrel in the whole project . Performs matrix tranpose inplace efficiently. Check [wiki](https://en.wikipedia.org/wiki/Transpose) for understanding how exactly matrix tranpose() works.
+This is a core kernel in the whole project. Performs matrix transpose in-place efficiently. Check [wiki](https://en.wikipedia.org/wiki/Transpose) for understanding how exactly matrix transpose() works.
 
 ### Args:
 #### - `Matrix<NumberType>& m` : The input matrix (will be transposed in-place)
@@ -487,6 +499,9 @@ This is a core kenrel in the whole project . Performs matrix tranpose inplace ef
 
 ### Returns:
 #### - void (modifies matrix in-place)
+
+#### Throws error if:
+##### - Memory allocation for temporary vector fails (std::bad_alloc)
 
 ### Detailed code exploration:
 Now many things can go in the head "why use 4 nested loops". Let's derive the same thing:
@@ -498,7 +513,7 @@ for(i =0 ; i < r, i++)
       mat[j][i] = mat[i][j]
 ```
 
-while this is clean for understanding , it is ridiculusly inefficient . The above version actually applies 2 stratigies , one of which is just loop unrolling , and the other one is ***tiling*** .[...]
+while this is clean for understanding , it is ridiculously inefficient . The above version actually applies 2 strategies , one of which is just loop unrolling , and the other one is ***tiling*** .[...]
 ### Example:
 
 
@@ -539,13 +554,16 @@ inline void show(
 ```
 
 ### What it does: 
-Simply just adds a beatiful format of the matrix and it's attributes to the pre-allocated std::cout buffer using the operator <<. It is very helpful for debuging the results, losses ,weights, gra[...]
+Simply just adds a beautiful format of the matrix and its attributes to the pre-allocated std::cout buffer using the operator <<. It is very helpful for debugging the results, losses, weights, gradients, etc.
 
 #### Args:
 ##### - `Matrix<NumberType>& matrix` : The matrix to display/print
 
 #### Returns:
 ##### - void (outputs to std::cout)
+
+#### Throws error if:
+##### - No errors thrown (all operations are safe)
 
 ### Example:
 
@@ -594,7 +612,7 @@ void reshape(
 ```
 
 ### What it does: 
-Simply it changes the shape of the matrix. Since the implementation of the Linalg::Matrix already stores the matrix as a FlatArray, simply setting the new row size and column size does the entire job. So , the product of the numbers in the new shape must be same as the initial shape. 
+Simply it changes the shape of the matrix. Since the implementation of the Linalg::Matrix already stores the matrix as a FlatArray, simply setting the new row size and column size does the entire operation.
 
 #### Args:
 ##### - `Matrix<NumberType>& matrix` : The matrix whose shape will be modified
@@ -602,6 +620,9 @@ Simply it changes the shape of the matrix. Since the implementation of the Linal
 
 #### Returns:
 ##### - void (modifies matrix shape in-place, no reallocation)
+
+#### Throws error if:
+##### - New shape dimensions do not match the total number of elements (std::runtime_error: "Invalid shape for applying new shape!") - only if DISABLE_VALIDATION is not defined
 
 ### Example:
 Code:
@@ -721,8 +742,12 @@ void slice(
 ### Returns:
 ##### - void (fills destination matrix in-place)
 
+#### Throws error if:
+##### - Slice indices are out of bounds (std::runtime_error: "Out of range Error!") - only if NO_SIZE_INVALIDITY_CHECK is not defined
+##### - Destination matrix dimensions do not match the computed slice dimensions (std::runtime_error: "Invalid shape for res!") - only if NO_SZIE_EQUALITY_CHECK is not defined
+
 ### Code Explanation: 
-Simply, it takes a slice of the matrix . Slice starts and ends at exactly given (inclusive). It uses tiling (cache blocking) and loop unrolling to extract the values of a slice . This kernel was speci[...]
+Simply, it takes a slice of the matrix. Slice starts and ends at exactly given indices (inclusive). It uses tiling (cache blocking) and loop unrolling to extract the values of a slice efficiently. This kernel was specifically designed for extracting patches of matrices with custom strides.
 
 ### Example:
 
@@ -794,7 +819,7 @@ void map(
 ```
 
 ### What it does: 
-There are exactly 3 big ballers of the entire project. One of which is map(). Simply if you give a properly formatted functor , then it just applies that function to all the other values. Uses lo[...]
+There are exactly 3 big ballers of the entire project. One of which is map(). Simply if you give a properly formatted functor , then it just applies that function to all the other values. Uses loop unrolling to exclude loop overhead.
 
 ```
 template<typename NumTy>
@@ -813,6 +838,9 @@ inline void operator() (NumTy& val){ ... } // take value by reference
 
 #### Returns:
 ##### - void (modifies matrix elements in-place)
+
+#### Throws error if:
+##### - User-defined functor throws an exception during execution
 
 ### Mathematical Formula:
 
