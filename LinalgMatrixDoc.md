@@ -99,9 +99,9 @@ void map(
 ```
 
 
-### [12] [Zip Kernel](ZipKernelDoc.hpp)
-### [13] [Reduce Kernel](ReduceKernelDoc.hpp)
-### [14] [MatMul Kernel](MatMulKernelDoc.hpp)
+### [11] [Zip Kernel](ZipKernelDoc.hpp)
+### [12] [Reduce Kernel](ReduceKernelDoc.hpp)
+### [13] [MatMul Kernel](MatMulKernelDoc.hpp)
 
 
 
