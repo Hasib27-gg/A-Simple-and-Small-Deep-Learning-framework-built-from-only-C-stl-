@@ -120,7 +120,7 @@ public:
     Linalg::fill(self._beta_grad, beta_grad_init);
 
     _idxer.setColumnSize(inp_shape.second);
-    _grad_scaler.setValue(inp_shape.first // Batch Size
+    _grad_scaler.setValue(inp_shape.first 
     );
 
     self._scaled_div._batch_size = inp_shape.first;
@@ -156,34 +156,28 @@ public:
     if (self._curr_mode == Mode::Evaluation)
       throw std::runtime_error("In [Mode::Evaluation] phase!");
 
-    // [1]: This part catculates x_hat * grad , where '*' is the handman product
     Linalg::zip_no_accum(grad, self._norm_buff, self._grad_buff_1,
                          self._func_mul_2, Linalg::Indexers::defaultIndexer,
                          Linalg::Indexers::defaultIndexer);
 
-    // [2]: This part reduces each column to extract the gradients w.r.t gamma
     Linalg::reduce_with_accum(self._grad_buff_1, self._gamma_grad,
                               self._func_sum_1, 0);
-    // w.r.t beta
+            
     Linalg::reduce_with_accum(grad, self._beta_grad, self._func_sum_2, 0);
 
-    // copy to temporary buffer to modify
+
     Linalg::copy_if_allocated(grad, self._grad_buff_2, 0x003);
 
-    // Scale the gradient by batch_size
     Linalg::map(self._grad_buff_2, self._grad_scaler);
 
-    // Sub Calculation for grad_buff = x_hat * dgamma
     Linalg::zip_no_accum(self._norm_buff, self._gamma_grad, self._grad_buff_3,
                          self._func_mul_3, Linalg::Indexers::defaultIndexer,
                          self._idxer);
 
-    // Sub Calculation for grad_buff = grad_buff + beta_grad
     Linalg::zip_with_accum(self._grad_buff_3, self._beta_grad,
                            self._grad_buff_3, self._func_add_2,
                            Linalg::Indexers::defaultIndexer, self._idxer);
 
-    // Final calculation for grad_buff = scaled_input_grad - grad_buff
     Linalg::zip_no_accum(self._grad_buff_2, self._grad_buff_3,
                          self._grad_buff_3, self._func_sub_2,
                          Linalg::Indexers::defaultIndexer,
