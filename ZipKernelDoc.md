@@ -44,11 +44,15 @@ template<typename NumberType1,
 
 ### Basic info:
 The most useful zip function of all time. In high level , it tries to apply the following formula:
-Let $A$ and $B$ are two matricies shaped (m, n). Then this function performs literarly:
-           $C$ = Function($A$, $B$)
-Or if you like elementwise defination:
-           $C[i, j]$ = Function($A[i, j]$, $B[i, j[$) for all 0 <= i <= m - 1 and 0 <= j <= n - 1
-This zip is the 2nd holy baller. The usefulness of the function is unmatched. It generalizes from basic matrix operations like add, subtract, multiply, division etc. to context based kernel fusion all thanks to the help of generic functors. 
+Let $A$ and $B$ are two matrices shaped $(m, n)$. Then this function performs literally:
+
+$$C = \text{Function}(A, B)$$
+
+Or if you like elementwise definition:
+
+$$C[i, j] = \text{Function}(A[i, j], B[i, j]) \quad \forall \, 0 \leq i \leq m - 1 \text{ and } 0 \leq j \leq n - 1$$
+
+This zip is the 2nd holy baller. The usefulness of the function is unmatched. It generalizes from basic matrix operations like add, subtract, multiply, division etc. to context based kernel fusion[...]
 
 ### About the code: 
 Yes, we can obviously optimize this using SIMD. But since we are learning , this is just unrolled loop which is "fast enough". 
@@ -178,10 +182,15 @@ template<typename NumberType1,
 ### Basic info: 
 This is just zip_no_accum() with a tiny twist in the formula:
 
-Normal formula for zip -> $C$ = Function($A$, $B$)
-Formula for this case -> $C$ = Function($A$, $B$) + $C$ 
+Formula for zip_no_accum:
 
-Simply , it is used in certain situations like when you have to add to current buffer, not override it. Thus, improves code quality and makes the usage of bufferes very efficient . It is heavily used in the .backward() implementations of NeuralNet:: .
+$$C = \text{Function}(A, B)$$
+
+Formula for zip_with_accum:
+
+$$C = \text{Function}(A, B) + C$$
+
+Simply, it is used in certain situations like when you have to add to current buffer, not override it. Thus, improves code quality and makes the usage of buffers very efficient. It is heavily [...]
 
 *** Documentation and coding style for this function is same as zip_no_accum() rather than the formula . So please check it before this ***
 ### Example:
@@ -259,7 +268,7 @@ result:
 ], Shape: (6, 6), ObjectId: 17
 ```
 
-### [2] Function named zip(). Code:
+### [3] Function named zip(). Code:
 ```
 
 
@@ -286,4 +295,4 @@ template<typename NumberType1,
 ### Explanation: 
 A tiny function which is simply used to make the API cleaner. 
 #### Additional Arg: bool accum = false:
-If this is false , it performs zip_no_accum(). Otherwise , it performs zip_with_accum(). 
+If this is false , it performs zip_no_accum(). Otherwise , it performs zip_with_accum().
