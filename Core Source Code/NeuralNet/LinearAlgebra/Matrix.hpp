@@ -249,10 +249,7 @@ void reshape(
     Matrix<NumberType>& matrix,
     NumPair new_shape){
     size_t size = matrix.getData().size();
-
-        new_shape.first  = new_shape.first  == -1 ? size / new_shape.second : new_shape.first;
-        new_shape.second = new_shape.second == -1 ? size / new_shape.first  : new_shape.second;
-
+    
 #ifndef DISABLE_VALIDATION
         size_t product = new_shape.first * new_shape.second;
         if (product != size)
