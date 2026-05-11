@@ -199,7 +199,7 @@ public:
             self._gamma, self._gamma_grad),
         self._gamma_additionals);
     optimizer.update(
-        std::pair<Linalg::Matrix<GammaType> &, Linalg::Matrix<GammaGradType> &>(
+        std::pair<Linalg::Matrix<BetaType> &, Linalg::Matrix<BetaGradType> &>(
             self._beta, self._beta_grad),
         self._beta_additionals);
   }
@@ -208,7 +208,7 @@ public:
   gamma_pair() {
     return {self._gamma, self._gamma_grad};
   }
-  inline std::pair<Linalg::Matrix<GammaType> &, Linalg::Matrix<GammaGradType> &>
+  inline std::pair<Linalg::Matrix<BetaType> &, Linalg::Matrix<BetaGradType> &>
   beta_pair() {
     return {self._beta, self._beta_grad};
   }
