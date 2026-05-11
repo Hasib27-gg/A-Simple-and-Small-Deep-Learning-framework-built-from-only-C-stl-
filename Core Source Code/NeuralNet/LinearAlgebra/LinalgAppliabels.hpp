@@ -352,30 +352,30 @@ public:
   inline void operator()(NumberType &val) { val = std::pow(val, self.pow); }
 };
 template <typename NumberType> class SquareRoot {
-
+public:
   inline void operator()(NumberType &val) { val = std::sqrt(val); }
 };
 template <typename NumberType> class CubeRoot {
-
+public:
   inline void operator()(NumberType &val) { val = std::cbrt(val); }
 };
 
 template <typename NumberType> class Round {
-
+public:
   inline void operator()(NumberType &val) { val = std::round(val); }
 };
 
 template <typename NumberType> class Ceiling {
-
+public:
   inline void operator()(NumberType &val) { val = std::ceil(val); }
 };
 
 template <typename NumberType> class Floor {
-
+public:
   inline void operator()(NumberType &val) { val = std::floor(val); }
 };
 template <typename NumberType> class Sign {
-
+public:
   inline void operator()(NumberType &val) { val = (val > 0) - (val < 0); }
 };
 
