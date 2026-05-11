@@ -195,7 +195,7 @@ inline Matrix<NumberType> createMatrix(
 ```
 
 #### What it does:
-Simply It just creates an Matrix<NumberType> instance, sets the row, col sizes and the object id then resizes the underlying FlatArray, finally shrinks the FlatArray (to not occupy too much memory) th[...]
+Simply It just creates an Matrix<NumberType> instance, sets the row, col sizes and the object id then resizes the underlying FlatArray, finally shrinks the FlatArray (to not occupy too much memor[...]
 
 #### Args:
 ##### - `const std::size_t rowSize` : The desired number of rows for the matrix
@@ -539,7 +539,7 @@ inline void show(
 ```
 
 ### What it does: 
-Simply just adds a beatiful format of the matrix and it's attributes to the pre-allocated std::cout buffer using the operator <<. It is very helpful for debuging the results, losses ,weights, gradient[...]
+Simply just adds a beatiful format of the matrix and it's attributes to the pre-allocated std::cout buffer using the operator <<. It is very helpful for debuging the results, losses ,weights, gra[...]
 
 #### Args:
 ##### - `Matrix<NumberType>& matrix` : The matrix to display/print
@@ -816,6 +816,23 @@ inline void operator() (NumTy& val){ ... } // take value by reference
 
 #### Returns:
 ##### - void (modifies matrix elements in-place)
+
+### Mathematical Formula:
+
+The `map()` function applies a user-defined function to every element of the matrix. This can be mathematically expressed as:
+
+$$M'_{ij} = f(M_{ij})$$
+
+Where:
+- $M$ is the input matrix with dimensions $m \times n$
+- $M'$ is the output matrix (same dimensions)
+- $f$ is the user-defined function applied to each element
+- $i \in [0, m)$ and $j \in [0, n)$ are the row and column indices
+- $M_{ij}$ is the element at position $(i, j)$
+
+For element-wise operations (applied to the flattened array):
+
+$$M'_k = f(M_k) \quad \text{for all } k \in [0, m \times n)$$
 
 ### Example:
 
