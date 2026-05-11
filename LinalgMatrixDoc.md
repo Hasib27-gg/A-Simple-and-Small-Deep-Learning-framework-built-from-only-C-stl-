@@ -1,23 +1,23 @@
 # Welcome to the detailed documentation for the file "Matrix.hpp"
 ## Preview of the contents:
 
-###[1] Matrix class:
-####- member explanation and thier usage.
-####- ```inline std::size_t getRowSize()```   
-####- ```inline std::size_t getColumnSize()```   
-####- ```inline std::size_t getObjectId()```   
-####- ```inline FlatArray<NumberType>& getData()```
-####- ```inline void setRowSize(const std::size_t newSize)```  
-####- ```inline void setColumnSize(const std::size_t newSize)```   
-####- ```inline void setObjectId(const std::size_t newId)``` 
-###[2] Function: 
+### [1] Matrix class:
+#### - member explanation and thier usage.
+#### - ```inline std::size_t getRowSize()```   
+#### - ```inline std::size_t getColumnSize()```   
+#### - ```inline std::size_t getObjectId()```   
+#### - ```inline FlatArray<NumberType>& getData()```
+#### - ```inline void setRowSize(const std::size_t newSize)```  
+#### - ```inline void setColumnSize(const std::size_t newSize)```   
+#### - ```inline void setObjectId(const std::size_t newId)``` 
+### [2] Function: 
 ```
 inline Matrix<NumberType> createMatrix(
     const std::size_t rowSize, 
     const std::size_t columnSize, 
     const std::size_t objectId)
 ```
-###[3] Function: 
+### [3] Function: 
 ```
 template<typename NumberType>
 inline void copy(
@@ -26,7 +26,7 @@ inline void copy(
     std::size_t           newId
 )
 ```
-###[4] Function:
+### [4] Function:
 ```
 template<typename NumberType>
 inline void copy_if_allocated(
@@ -35,7 +35,7 @@ inline void copy_if_allocated(
     std::size_t           newId
 )
 ```
-###[5] Function:
+### [5] Function:
 
 ```
 template<typename NumberType, typename ValueGenerator>
@@ -44,7 +44,7 @@ void fill(
     ValueGenerator& gen
 )
 ```
-###[6] Function:
+### [6] Function:
 ```
 template<typename NumberType>
 void transpose(
@@ -55,7 +55,7 @@ void transpose(
 )
 ```
 
-###[7] Function:
+### [7] Function:
 ```
 template<typename NumberType>
 inline void show(
@@ -63,7 +63,7 @@ inline void show(
 )
 ```
 
-###[8] Function:
+### [8] Function:
 ```
 template<typename NumberType>
 inline void show(
@@ -72,7 +72,7 @@ inline void show(
 ```
 
 
-###[9] Function:
+### [9] Function:
 ```
 template<typename NumberType>
 void reshape(
@@ -80,7 +80,7 @@ void reshape(
     NumPair new_shape)
 ```
 
-###[10] Function:
+### [10] Function:
 ```
 template<typename NumberType>
 void slice(
@@ -96,7 +96,7 @@ void slice(
 ```
 
 
-###[11] Function:
+### [11] Function:
 ```
 template<typename NumberType, typename FunctionType>
 void map(
@@ -106,6 +106,6 @@ void map(
 ```
 
 
-###[12] [Zip Kernel](ZipKernelDoc.hpp)
-###[13] [Reduce Kernel](ReduceKernelDoc.hpp)
-###[14] [MatMul Kernel](MatMulKernelDoc.hpp)
+### [12] [Zip Kernel](ZipKernelDoc.hpp)
+### [13] [Reduce Kernel](ReduceKernelDoc.hpp)
+### [14] [MatMul Kernel](MatMulKernelDoc.hpp)
