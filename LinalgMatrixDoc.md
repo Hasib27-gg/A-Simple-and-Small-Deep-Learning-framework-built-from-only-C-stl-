@@ -195,7 +195,16 @@ inline Matrix<NumberType> createMatrix(
 ```
 
 #### What it does:
-Simply It just creates an Matrix<NumberType> instance, sets the row, col sizes and the object id then resizes the underlying FlatArray, finally shrinks the FlatArray (to not occupy too much memory) thus returns the result.
+Simply It just creates an Matrix<NumberType> instance, sets the row, col sizes and the object id then resizes the underlying FlatArray, finally shrinks the FlatArray (to not occupy too much memory) th[...]
+
+#### Args:
+##### - `const std::size_t rowSize` : The desired number of rows for the matrix
+##### - `const std::size_t columnSize` : The desired number of columns for the matrix
+##### - `const std::size_t objectId` : A unique identifier for this matrix (useful for debugging)
+
+#### Returns:
+##### - A newly created `Matrix<NumberType>` with allocated memory
+
 #### Example:
 
 ```
@@ -221,6 +230,14 @@ inline void copy(
 [This function is basically Useless , I don't know why I created it]
 It creates a deep copy of a matrix. It takes the matrix  Matrix<NumberType>& from , assigns the row size , col size using .set***Size() to underlying FlatArray,
 uses operator= () to assign the from.getData() to the to.getData() and finally sets the new id to the to matrix.
+
+#### Args:
+##### - `Matrix<NumberType>& from` : Source matrix to copy from
+##### - `Matrix<NumberType>& to` : Destination matrix to copy to (will be resized)
+##### - `std::size_t newId` : New object id for the destination matrix
+
+#### Returns:
+##### - void (modifies destination matrix in-place)
 
 #### Example:
 ```
@@ -306,21 +323,36 @@ inline void copy_if_allocated(
 #### What it does: 
 [Usefulness: Extremely Useful]
 ***Note: It has 2 overloads***
-If the destination matrix is already allocated (must have the same capacity of the source matrix), then this function copies all the values from the source matrix to the destination matrix. It uses loop unrolling to exclude the overhead of the for loops. Though it can be optimized through SIMD , but the code would look like an alien wrote it . So , to be minimal in such mini project, it is already a bit faster becuase of loop unrolling. 
+If the destination matrix is already allocated (must have the same capacity of the source matrix), then this function copies all the values from the source matrix to the destination matrix. It us[...]
 
-This is specifically designed to be used in modules of NeuralNet:: , beucase we pre - allocated buffers (so that forward pass don't have to wait for the os to allocate the memory) , and then copy the values of whatever we need to,
+This is specifically designed to be used in modules of NeuralNet:: , beucase we pre - allocated buffers (so that forward pass don't have to wait for the os to allocate the memory) , and then copy[...]
 
 The first overload is meant to be used if the 2 matricies has same dtype. Otherwise the second matrix can be used for copy and cast at once.
+
+#### Args (Overload 1 - Same Type):
+##### - `Matrix<NumberType>& from` : Source matrix to copy from
+##### - `Matrix<NumberType>& to` : Pre-allocated destination matrix (must have same dimensions as source)
+##### - `std::size_t newId` : New object id for the destination matrix
+
+#### Args (Overload 2 - Type Conversion):
+##### - `Matrix<NumberType1>& from` : Source matrix with NumberType1 elements
+##### - `Matrix<NumberType2>& to` : Pre-allocated destination matrix with NumberType2 elements (casts values during copy)
+##### - `std::size_t newId` : New object id for the destination matrix
+
+#### Returns:
+##### - void (modifies destination matrix in-place)
+
 #### Example:
 ```
 Linalg::Matrix<float> source_1 = createMatrix<float>(4, 4, 0x001)
 Linalg::Matrix<float> source_2 = createMatrix<float>(4, 4, 0x002)
-Linalg::Matrix<float> source_3 = createMatrix<double>(4, 4, 0x003)
+Linalg::Matrix<double> source_3 = createMatrix<double>(4, 4, 0x003)
 Linalg::copy_if_allocated(source_1 , source_2, 0x004); // destination must be alloacted
 Linalg::copy_if_allocated(source_1 , source_3, 0x004); // 2nd overload calls!, the source 3 has the values of source 1
 
 ```
-### [4] Function named fill(), Code:
+
+### [5] Function named fill(). Code:
 ```
 template<typename NumberType, typename ValueGenerator>
 void fill(
@@ -371,6 +403,13 @@ return res;
 };
 ```
 
+#### Args:
+##### - `Matrix<NumberType>& matrix` : The matrix to fill
+##### - `ValueGenerator& gen` : A functor/generator object that takes an index and returns a value of type NumberType
+
+#### Returns:
+##### - void (modifies matrix in-place)
+
 ### Example:
 
 ```
@@ -389,7 +428,7 @@ Linalg::fill(mat, gen); // fills the matrix with 0
 ```
 
 
-### [6] Function named transpose(), Code:
+### [6] Function named transpose(). Code:
 ```
 template<typename NumberType>
 void transpose(
@@ -439,10 +478,15 @@ void transpose(
 
 ### Explanation: 
 This is a core kenrel in the whole project . Performs matrix tranpose inplace efficiently. Check [wiki](https://en.wikipedia.org/wiki/Transpose) for understanding how exactly matrix tranpose() works.
+
 ### Args:
-#### Matrix<NumberType>& m : the input matrix
-#### const std::size_t rtnId = NULL_OBJECT_ID /* removed */
-#### const std::size_t rowTile / colTile: These are the block sizes for the tiling algorithm. Defaulted to 128, which is usually a "sweet spot" for L1/L2 cache performance on most modern CPUS.
+#### - `Matrix<NumberType>& m` : The input matrix (will be transposed in-place)
+#### - `const std::size_t rtnId = NULL_OBJECT_ID` : New object id for the matrix (optional, removed feature)
+#### - `const std::size_t rowTile = 128` : Row tile size for cache blocking. Default is 128 (sweet spot for L1/L2 cache)
+#### - `const std::size_t colTile = 128` : Column tile size for cache blocking. Default is 128 (adjust based on hardware)
+
+### Returns:
+#### - void (modifies matrix in-place)
 
 ### Detailed code exploration:
 Now many things can go in the head "why use 4 nested loops". Let's derive the same thing:
@@ -454,7 +498,7 @@ for(i =0 ; i < r, i++)
       mat[j][i] = mat[i][j]
 ```
 
-while this is clean for understanding , it is ridiculusly inefficient . The above version actually applies 2 stratigies , one of which is just loop unrolling , and the other one is ***tiling*** . [This](https://www.youtube.com/watch?v=G92BCtfTwOE&t=14s) youtube video clearly explains how cache tiling can improve perofromance for larger matricies by reducing cache pollution . Finally we use  #pragma omp parallel for to use all threads of our CPU.
+while this is clean for understanding , it is ridiculusly inefficient . The above version actually applies 2 stratigies , one of which is just loop unrolling , and the other one is ***tiling*** .[...]
 ### Example:
 
 
@@ -493,8 +537,16 @@ inline void show(
     std::cout << "], Shape: (" << _RowSize << ", " << _ColumnSize << ")" << ", ObjectId: " << matrix.getObjectId() << '\n';
 }
 ```
+
 ### What it does: 
-Simply just adds a beatiful format of the matrix and it's attributes to the pre-allocated std::cout buffer using the operator <<. It is very helpful for debuging the results, losses ,weights, gradients or anything . 
+Simply just adds a beatiful format of the matrix and it's attributes to the pre-allocated std::cout buffer using the operator <<. It is very helpful for debuging the results, losses ,weights, gradient[...]
+
+#### Args:
+##### - `Matrix<NumberType>& matrix` : The matrix to display/print
+
+#### Returns:
+##### - void (outputs to std::cout)
+
 ### Example:
 
 Code:
@@ -522,7 +574,7 @@ Result:
 
 ```
 
-### Function named reshape(). Code:
+### [8] Function named reshape(). Code:
 ```
 template<typename NumberType>
 void reshape(
@@ -545,7 +597,15 @@ void reshape(
 ```
 
 ### What it does: 
-Simply it changes the shape of the matrix. It can also be used as numpy style like if you don't know the other length , just do {new_len, -1} or {-1, new_len} . Since Linalg::Matrix already stores everything in a FlatArray , it just changes the view as the value count doesn't change in reshape() . 
+Simply it changes the shape of the matrix. It can also be used as numpy style like if you don't know the other length , just do {new_len, -1} or {-1, new_len} . Since Linalg::Matrix already store[...]
+
+#### Args:
+##### - `Matrix<NumberType>& matrix` : The matrix whose shape will be modified
+##### - `NumPair new_shape` : A pair of (rows, columns) for the new shape. Can use -1 for automatic inference (e.g., {-1, 9} to compute rows automatically)
+
+#### Returns:
+##### - void (modifies matrix shape in-place, no reallocation)
+
 ### Example:
 Code:
 ```
@@ -590,7 +650,7 @@ After Reshape:
 ```
 
 
-### [10] Function named slice(), Code:
+### [9] Function named slice(). Code:
 ```
 template<typename NumberType>
 void slice(
@@ -652,16 +712,20 @@ void slice(
 ```
 
 ### Args: 
-#### Matrix<NumberType>& matrix - The input Matrix
-#### Matrix<NumberType>& matrix - The return address (where to store the result)
-#### const NumPair start - The start (inclusive)
-#### const NumPair end - The end (inclusive)
-#### const std::size_t i_stride = 1 - The stride for the iterator i (simple slice is just 1)
-#### const std::size_t j_stride = 1 - The stride for the iterator j (simple slice is just 1) 
-#### const std::size_t row_tile = 128 - row tiling value (change based on your hardware) 
-#### const std::size_t col_tile = 128 - column tiling value 
+##### - `Matrix<NumberType>& matrix` : The input matrix to slice from
+##### - `Matrix<NumberType>& rtnAddr` : Pre-allocated output matrix (must have correct dimensions based on start, end, and strides)
+##### - `const NumPair start` : Starting indices (inclusive) as {row_start, col_start}
+##### - `const NumPair end` : Ending indices (exclusive) as {row_end, col_end}
+##### - `const std::size_t i_stride = 1` : Step size for row iteration (1 for consecutive rows, 2 for every other row, etc.)
+##### - `const std::size_t j_stride = 1` : Step size for column iteration (1 for consecutive columns, 2 for every other column, etc.)
+##### - `const std::size_t row_tile = 128` : Row tile size for cache blocking (adjust based on hardware)
+##### - `const std::size_t col_tile = 128` : Column tile size for cache blocking (adjust based on hardware)
+
+### Returns:
+##### - void (fills destination matrix in-place)
+
 ### Code Explanation: 
-Simply, it takes a slice of the matrix . Slice starts and ends at exactly given (inclusive). It uses tiling (cache blocking) and loop unrolling to extract the values of a slice . This kernel was specifically made to extract the values for im2col in Conv2d impl . 
+Simply, it takes a slice of the matrix . Slice starts and ends at exactly given (inclusive). It uses tiling (cache blocking) and loop unrolling to extract the values of a slice . This kernel was speci[...]
 
 ### Example:
 
@@ -733,7 +797,7 @@ void map(
 ```
 
 ### What it does: 
-There are exactly 3 big ballers of the entire project. One of which is map(). Simply if you give a properly formatted functor , then it just applies that function to all the other values. Uses loop unrolling to exclude loop overhead. Though we could use SIMD , as I have said , I wanted to make a project that is readable and "fast enough" . A proper appliable function should have the format:
+There are exactly 3 big ballers of the entire project. One of which is map(). Simply if you give a properly formatted functor , then it just applies that function to all the other values. Uses lo[...]
 
 ```
 template<typename NumTy>
@@ -745,6 +809,13 @@ public:
 inline void operator() (NumTy& val){ ... } // take value by reference
 };
 ```
+
+#### Args:
+##### - `Matrix<NumberType>& matrix` : The matrix to apply the function to
+##### - `FunctionType& func` : A functor/function object that takes a reference to NumberType and applies an operation
+
+#### Returns:
+##### - void (modifies matrix elements in-place)
 
 ### Example:
 
