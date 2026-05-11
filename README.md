@@ -3,7 +3,7 @@ This is a repository of a simple yet very helpful for learning deep learning fra
 
 
 ## Before we start our journey to dive deep into....:
-Me as the author , wish to tell you that this framework is not meant to be for poduction grade or for commercial use. This library uses handcoded C++ codes to implement the tools such as functions , classes etc. This raw C++ unoptimized code is , atleast from my prespective , the perfect resource for understanding "what's under the hood?" . Thus , please treat this project as that way.
+Me as the author , wish to tell you that this framework is not meant to be for production grade or for commercial use. This library uses handcoded C++ codes to implement the tools such as functions , classes etc. This raw C++ unoptimized code is , atleast from my prespective , the perfect resource for understanding "what's under the hood?" . Thus , please treat this project as that way.
 
 ## [1] The Reason and the startings:
 Some poeple will say that "why reinvent the wheal?". To them , I kindly want to remind you that "To understand how a wheal really works before you say you know how it works, you have to own the knowledge of how it works". And what is the best way for sort of "owning" that knowledge ? Practise + Implementation + Improving the existing knowledge . There are many young people in nowadays who loves deep diving into technical fields such as Deep Learning. To them, I want to tell you that , this repo can be treated as thier source of the hidden things happen in modern frameworks. 
