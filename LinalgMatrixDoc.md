@@ -580,15 +580,12 @@ template<typename NumberType>
 void reshape(
     Matrix<NumberType>& matrix,
     NumPair new_shape){
-    size_t size = matrix.getData().size();
-
-        new_shape.first  = new_shape.first  == -1 ? size / new_shape.second : new_shape.first;
-        new_shape.second = new_shape.second == -1 ? size / new_shape.first  : new_shape.second;
+    std::size_t size = matrix.getData().size();
 
 #ifndef DISABLE_VALIDATION
-        size_t product = new_shape.first * new_shape.second;
-        if (product != size)
-            throw std::runtime_error("Invalid shape for applying new shape!");
+    std::size_t product = new_shape.first * new_shape.second;
+    if (product != size)
+        throw std::runtime_error("Invalid shape for applying new shape!");
 #endif
 
     matrix.setRowSize(new_shape.first);
@@ -597,7 +594,7 @@ void reshape(
 ```
 
 ### What it does: 
-Simply it changes the shape of the matrix. It can also be used as numpy style like if you don't know the other length , just do {new_len, -1} or {-1, new_len} . Since Linalg::Matrix already store[...]
+Simply it changes the shape of the matrix. Since the implementation of the Linalg::Matrix already stores the matrix as a FlatArray, simply setting the new row size and column size does the entire job. So , the product of the numbers in the new shape must be same as the initial shape. 
 
 #### Args:
 ##### - `Matrix<NumberType>& matrix` : The matrix whose shape will be modified
