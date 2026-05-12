@@ -15,3 +15,4 @@ You can find the link of each right below:
 ## [10. MSE](MSEDoc.md)
 ## [11. SGD](SGDDoc.md)
 ## [12. SGDM](SGDMDoc.md)
+## [13. AdamW](AdamWDoc.md)
