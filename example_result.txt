@@ -1,0 +1,24 @@
+Starting benchmark for 10 epochs...
+Epoch: 0 | Loss: 25.126
+Epoch: 1 | Loss: 0.765758
+Epoch: 2 | Loss: 1.19934
+Epoch: 3 | Loss: 0.0784688
+Epoch: 4 | Loss: 0.407773
+Epoch: 5 | Loss: 0.335133
+Epoch: 6 | Loss: 0.0737137
+Epoch: 7 | Loss: 0.100588
+Epoch: 8 | Loss: 0.25035
+Epoch: 9 | Loss: 0.24879
+
+
+==============================
+BENCHMARK RESULTS
+==============================
+Total Time:      31.229 seconds
+Avg per Epoch:   3122.9 ms
+==============================
+
+
+## Note: Computer specs : Ryzen 5 5600g, 16 gigs of ddr4 ram (dual channel)
+## This may be slower than pytorch but fast enough. 
+## Also , see the dummy dataset, it is quite heavy
